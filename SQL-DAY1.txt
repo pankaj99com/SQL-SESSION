@@ -1,0 +1,576 @@
+PANKAJ SQL NOTES
+--------------------
+DATA:-Small set of information becomes data,this set of information helps make decision.
+
+DATABASE:-Place where data can be stored.Database can also be defined as collection of one or more tables
+
+DBMS-(DATABASE MANAGEMENT SYSTEM)-It is a programs tha stores,retrieves and modifies data in the database based on user request
+
+TYPES OF DATABASE MANAGEMENT SYSTEM
+--------------------------------------
+1.HIERARCHIAL
+2.NETWORK
+3.RELATIONAL
+4.MULTIDIMENSIONAL
+5.OBJECT RELATIONAL
+-------------------------------------
+3.RELATIONAL DBMS--
+A DBMS is said to be relational or RDBMS if the database relationship is treated in the form of tables.
+
+A table is composed of ROWS and COLUMNS is used to organize the database and its structure and its actuall a 2-D array in the computer memory
+
+EG:-ORACLE,SYBASE,INFORMIX,SQL SERVER,MICROSOFT ACCESS
+----------------------------------------------------------
+RELATING MULTIPLE TABLES
+
+PRIMARY KEY
+1.Each ROWS of the data in a table is uniquely identified using primary key(Pk)
+2.Constraints are restrictions on each COLUMNS
+3.Out of many key attribute we select only one key called SUPERKEY OR PRIMARY KEY
+4.Primary key is NOT NULL and UNIQUE
+5.Only one primary key is allowed per table.
+
+CANDIDATE KEY
+
+Multiple key which is UNIQUE and NOT NULL is called CANDIDATE KEY
+Out of CANDIDATE KEY we select only one PRIMARY KEY and rest are called as ALTERNATE KEYS.
+
+
+FOREIGN KEY
+1.We can logically relate data from multiple tables using FOREIGN KEY
+2.Make PRIMARY KEY as FOREIGN KEY on the table on which we want to establish some relational
+3.FOREIGN KEY is refrencial integrity constraint which creates relatioship between tables
+4.FOREIGN KEY can take both NULL and DUPLICATE VALUES
+5.There can be more than one FOREIGN KEY per table.
+
+--------------------------------------------
+
+SQL-STRUCTURED QUERY LANGUAGE
+This database language is mainly designed for relational databases
+SQL is standard language for accessing and manupulating databases
+SQL IS CASE INSENSITIVE LANGUAGE
+
+Types of SQL STATEMENTS
+---------------------------------------
+1.DQL-DATA QUERY LANGUAGE
+SELECT
+--------------------------------------- 
+2.DDL-DATA DEFINITION LANGUAGE
+CREATE
+ALTER
+DROP
+RENAME
+TRUNCATE
+----------------------------------------
+3.DML-DATA MANUPULATION LANGUAGE
+INSERT
+UPDATE
+DELETE
+----------------------------------------
+4.DCL-DATA CONTROL LANGUAGE
+GRANT
+REVOKE
+----------------------------------------
+5.TCL-TRANSACTIONAL CONTROL LANGUAGE
+COMMIT
+ROLLBACK
+SAVEPOINT
+-----------------------------------------
+CREATE TABLE===========
+
+create table dept(   
+  deptno     number(2,0),   
+  dname      varchar2(14),   
+  loc        varchar2(13),   
+  constraint pk_dept primary key (deptno)   
+)
+
+select * from dept
+select * from emp
+create table emp(   
+  empno    number(4,0),   
+  ename    varchar2(10),   
+  job      varchar2(9),   
+  mgr      number(4,0),   
+  hiredate date,   
+  sal      number(7,2),   
+  comm     number(7,2),   
+  deptno   number(2,0),   
+  constraint pk_emp primary key (empno),   
+  constraint fk_deptno foreign key (deptno) references dept (deptno)   
+)
+insert into DEPT (DEPTNO, DNAME, LOC) 
+values(10, 'ACCOUNTING', 'NEW YORK')
+
+insert into dept   
+values(20, 'RESEARCH', 'DALLAS')
+insert into dept   
+values(30, 'SALES', 'CHICAGO')
+insert into dept  
+values(40, 'OPERATIONS', 'BOSTON')
+
+insert into emp   
+values(   
+ 7839, 'KING', 'PRESIDENT', null,   
+ to_date('17-11-1981','dd-mm-yyyy'),   
+ 5000, null, 10   
+)
+insert into emp  
+values(  
+ 7698, 'BLAKE', 'MANAGER', 7839,  
+ to_date('1-5-1981','dd-mm-yyyy'),  
+ 2850, null, 30  
+)
+
+insert into emp  
+values(  
+ 7782, 'CLARK', 'MANAGER', 7839,  
+ to_date('9-6-1981','dd-mm-yyyy'),  
+ 2450, null, 10  
+)
+insert into emp  
+values(  
+ 7566, 'JONES', 'MANAGER', 7839,  
+ to_date('2-4-1981','dd-mm-yyyy'),  
+ 2975, null, 20  
+)
+insert into emp  
+values(  
+ 7788, 'SCOTT', 'ANALYST', 7566,  
+ to_date('13-JUL-87','dd-mm-rr') - 85,  
+ 3000, null, 20  
+)
+insert into emp  
+values(  
+ 7902, 'FORD', 'ANALYST', 7566,  
+ to_date('3-12-1981','dd-mm-yyyy'),  
+ 3000, null, 20  
+)
+
+insert into emp  
+values(  
+ 7369, 'SMITH', 'CLERK', 7902,  
+ to_date('17-12-1980','dd-mm-yyyy'),  
+ 800, null, 20  
+)
+
+insert into emp  
+values(  
+ 7499, 'ALLEN', 'SALESMAN', 7698,  
+ to_date('20-2-1981','dd-mm-yyyy'),  
+ 1600, 300, 30  
+)
+
+insert into emp  
+values(  
+ 7521, 'WARD', 'SALESMAN', 7698,  
+ to_date('22-2-1981','dd-mm-yyyy'),  
+ 1250, 500, 30  
+)
+
+insert into emp  
+values(  
+ 7654, 'MARTIN', 'SALESMAN', 7698,  
+ to_date('28-9-1981','dd-mm-yyyy'),  
+ 1250, 1400, 30  
+)
+
+insert into emp  
+values(  
+ 7844, 'TURNER', 'SALESMAN', 7698,  
+ to_date('8-9-1981','dd-mm-yyyy'),  
+ 1500, 0, 30  
+)
+insert into emp  
+values(  
+ 7876, 'ADAMS', 'CLERK', 7788,  
+ to_date('13-JUL-87', 'dd-mm-rr') - 51,  
+ 1100, null, 20  
+)
+
+insert into emp  
+values(  
+ 7934, 'MILLER', 'CLERK', 7782,  
+ to_date('23-1-1982','dd-mm-yyyy'),  
+ 1300, null, 10  
+)
+=============================================
+SELECT
+---------------
+SQL comes with its own command
+
+1->DESCRIBE-to describe the contents of tables
+Describe emp
+
+Table	Column	Data Type	Length	Precision	Scale	Primary Key	Nullable  Default	Comment
+EMP	EMPNO	    NUMBER	     -	     4	         0	      1	          -	        -	     -
+ 	ENAME	    VARCHAR2	10	     -	         -	      -	        nullable	-	     -
+ 	JOB	        VARCHAR2	9	     -	         -	      -	        nullable	-	     -
+ 	MGR	        NUMBER	     -	     4	         0	      -	        nullable	-	     -
+ 	HIREDATE	DATE	     7	     -	         -	      -	        nullable	-	     -
+ 	SAL	        NUMBER	     -	     7	         2	      -	        nullable	-	     -
+ 	COMM	    NUMBER	     -	     7	         2	      -	        nullable	-	     -
+ 	DEPTNO	    NUMBER       -	     2	         0	      -	        nullable	-	     -
+
+
+Capabilities of SQL Statements--
+1.PROJECTION--Selecting desired columns
+2.SELECTION--selecting desired rows
+3.JOINS-joins 2 or more tables
+
+
+SELECT * |{[DISTINCT] COLUMN|EXPRRSSION[alias],....} FROM TABLE;
+
+SELECT identifies what COLUMNS
+FROM identifies which TABLE
+
+--->
+EXAMPLE OF PROJECTION--Selecting ename ,sal from emp table.
+select ename,sal from emp
+ENAME	SAL
+KING	5000
+CLARK	2450
+JONES	2975
+ALLEN	1600
+BLAKE	2850
+JAMES	950
+SCOTT	3000
+FORD	3000
+SMITH	800
+WARD	1250
+MARTIN	1250
+TURNER	1500
+ADAMS	1100
+MILLER	1300
+----------------------------------
+select  Empno,Empno,Empno from emp
+EMPNO	EMPNO	EMPNO
+7369	7369	7369
+7499	7499	7499
+7521	7521	7521
+
+Column Alias example below-
+select ename empkanaam,deptno depkanaam from emp
+EMPKANAAM	DEPKANAAM
+KING	      10
+CLARK	      10
+JONES	      20
+ALLEN	      30
+BLAKE	      30
+JAMES	      30
+SCOTT	      20
+FORD	      20
+SMITH	      20
+WARD	      30
+
+
+SELECT * FROM emp
+EMPNO	ENAME	JOB	         MGR	HIREDATE	SAL	   COMM	   DEPTNO
+7839	KING	PRESIDENT	   -	11/17/1981	5000	-	     10
+7782	CLARK	MANAGER	    7839	06/09/1981	2450	-	     10
+7566	JONES	MANAGER	    7839	04/02/1981	2975	-	     20
+7499	ALLEN	SALESMAN	7698	02/20/1981	1600	300	     30
+7698	BLAKE	MANAGER	    7839	05/01/1981	2850	-	     30
+7900	JAMES	CLERK	    7698	12/03/1981	950	    -	     30
+7788	SCOTT	ANALYST	    7566	04/19/1987	3000	-	     20
+7902	FORD	ANALYST	    7566	12/03/1981	3000	-	     20
+7369	SMITH	CLERK	    7902	12/17/1980	800	    -	     20
+7521	WARD	SALESMAN	7698	02/22/1981	1250	500	     30
+7654	MARTIN	SALESMAN	7698	09/28/1981	1250	1400	 30
+7844	TURNER	SALESMAN	7698	09/08/1981	1500	0	     30
+7876	ADAMS	CLERK	    7788	05/23/1987	1100	-	     20
+7934	MILLER	CLERK	    7782	01/23/1982	1300	-	     10
+
+ARITHMETIC EXPRESSION
+-----------------------
++   ADDITION
+-   SUBTRACTION
+*   MULTIPLICATION
+/   DIVISION
+
+INCREASE SALARY OF ALL EXPLOYEE BY 100
+SELECT EMPNO,ENAME,JOB,SAL+100 updatedsal from emp
+EMPNO	ENAME	JOB	        UPDATEDSAL
+7839	KING	PRESIDENT	   5100
+7782	CLARK	MANAGER	       2550
+7566	JONES	MANAGER	       3075
+7499	ALLEN	SALESMAN	   1700
+7698	BLAKE	MANAGER	       2950
+7900	JAMES	CLERK	       1050
+7788	SCOTT	ANALYST	       3100
+7902	FORD	ANALYST	       3100
+7369	SMITH	CLERK	        900
+7521	WARD	SALESMAN	   1350
+7654	MARTIN	SALESMAN	   1350
+7844	TURNER	SALESMAN	   1600
+7876	ADAMS	CLERK	       1200
+7934	MILLER	CLERK	       1400
+
+SELECT EMPNO,sal,SAL*2+100 updatedsal from emp
+EMPNO	SAL	UPDATEDSAL
+7839	5000	10100
+7782	2450	5000
+7566	2975	6050
+7499	1600	3300
+7698	2850	5800
+7900	950	    2000
+7788	3000	6100
+7902	3000	6100
+7369	800	    1700
+7521	1250	2600
+7654	1250	2600
+7844	1500	3100
+7876	1100	2300
+7934	1300	2700
+SINGLE QUOTES IS CONSIDERED AS LITERAL CHARACTER
+
+SELECT 'a' from emp
+'A'
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+SELECT "A" from emp
+ "A": invalid identifier
+
+SELECT 100 from emp
+100
+----
+100
+100
+100
+100
+100
+100
+100
+100
+100
+100
+100
+100
+100
+100
+
+IN ORDER TO PRESERVE THE CASE FOR ALIAS KEEP ALIAS NAME INSIDE DOUBLE QUOTES " "
+select ename || ' job is '|| job ||' and manager is '||mgr  "manager" from emp
+
+select distinct deptno from emp
+DEPTNO
+30
+10
+20
+select deptno from emp
+DEPTNO
+10
+10
+20
+30
+30
+30
+20
+20
+20
+30
+select distinct deptno from dept
+DEPTNO
+10
+20
+30
+40
+select distinct * from emp
+EMPNO	ENAME	JOB	        MGR	HIREDATE	SAL	   COMM	DEPTNO
+7839	KING	PRESIDENT	-	11/17/1981	5000	-	10
+7782	CLARK	MANAGER	   7839	06/09/1981	2450	-	10
+7566	JONES	MANAGER	   7839	04/02/1981	2975	-	20
+7499	ALLEN	SALESMAN   7698	02/20/1981	1600	300	30
+7698	BLAKE	MANAGER	   7839	05/01/1981	2850	-	30
+7900	JAMES	CLERK	   7698	12/03/1981	950	-	30
+7788	SCOTT	ANALYST	   7566	04/19/1987	3000	-	20
+7902	FORD	ANALYST	   7566	12/03/1981	3000	-	20
+7369	SMITH	CLERK	   7902	12/17/1980	800	-	20
+7521	WARD	SALESMAN   7698	02/22/1981	1250	500	30
+7654	MARTIN	SALESMAN   7698	09/28/1981	1250	1400	30
+7844	TURNER	SALESMAN   7698	09/08/1981	1500	0	30
+7876	ADAMS	CLERK	   7788	05/23/1987	1100	-	20
+7934	MILLER	CLERK	   7782	01/23/1982	1300	-	10
+14 rows returned in 0.01 seconds	        	
+
+Calculate annual salary with quarterly commission of 500
+select ename,sal,12*(sal+(1/3*500))from emp
+ENAME	SAL	   12*(SAL+(1/3*500))
+KING	5000	62000
+CLARK	2450	31400
+JONES	2975	37700
+ALLEN	1600	21200
+BLAKE	2850	36200
+JAMES	950	    13400
+SCOTT	3000	38000
+FORD	3000	38000
+SMITH	800	    11600
+WARD	1250	17000
+MARTIN	1250	17000
+TURNER	1500	20000
+ADAMS	1100	15200
+MILLER	1300	17600
+14 rows returned in 0.01 seconds	 
+
+Display employee whose salary is greater than 2400
+select ename,sal from emp where sal >2400
+ENAME	SAL
+KING	5000
+CLARK	2450
+JONES	2975
+BLAKE	2850
+SCOTT	3000
+FORD	3000
+6 rows returned in 0.00 seconds	
+
+Display employee whose salary is equal to 3000
+select ename,sal from emp where sal=3000
+ENAME	SAL
+SCOTT	3000
+FORD	3000
+
+Display employee whose salary between 500 and 2000
+select ename,sal from emp where sal between 500 and 2000
+ENAME	SAL
+ALLEN	1600
+JAMES	950
+SMITH	800
+WARD	1250
+MARTIN	1250
+TURNER	1500
+ADAMS	1100
+MILLER	1300
+8 rows returned in 0.00 seconds
+
+Between can be applied on Names as well but it will check alphabetic order and gives the result
+select ename from emp where ename  between 'ALLEN'  and 'BLAKE'
+ENAME
+ALLEN
+BLAKE
+
+Use the IN membership condition to test for values as list
+select ename,sal from emp where sal IN(5000,1000,1500)
+ENAME	SAL
+KING	5000
+TURNER	1500
+
+select ename,sal from emp where ename IN('ALLEN','SCOTT','TURNER')
+
+ENAME	SAL
+ALLEN	1600
+SCOTT	3000
+TURNER	1500
+select ename,sal from emp where ename IN('ALLEN','ALLEN','ALLEN')
+ENAME	SAL
+ALLEN	1600
+
+
+USING like condition
+-------------------------
+Display all employees whose name starts with letter S
+select ename,sal from emp where ename like 'S%'
+ENAME	SAL
+SCOTT	3000
+SMITH	800
+
+Display all employees whose name ends with letter N
+select ename,sal from emp where ename like '%N'
+ENAME	SAL
+ALLEN	1600
+MARTIN	1250
+
+Display all employees whose name contains letter L
+select ename,sal from emp where ename like '%L%'
+ENAME	SAL
+CLARK	2450
+ALLEN	1600
+BLAKE	2850
+MILLER	1300
+
+Display all employees whose name Second last character has letter R
+select ename,sal from emp where ename like '%R_'
+ENAME	SAL
+CLARK	2450
+FORD	3000
+WARD	1250
+
+Display all employees whose name has second character A
+select ename,sal from emp where ename like '_A%'
+ENAME	SAL
+JAMES	950
+WARD	1250
+MARTIN	1250
+
+Display all employees who donot have manager
+select ename from emp where mgr IS NULL
+ENAME
+KING
+
+Logical conditions
+--------------------------
+SELECT ENAME,JOB,SAL FROM EMP WHERE SAL<2000 AND JOB='CLERK'
+ENAME	JOB	    SAL
+JAMES	CLERK	950
+SMITH	CLERK	800
+ADAMS	CLERK	1100
+MILLER	CLERK	1300
+
+SELECT ENAME,JOB,SAL FROM EMP WHERE SAL<2000 OR JOB='CLERK'
+ENAME	JOB	        SAL
+ALLEN	SALESMAN	1600
+JAMES	CLERK	     950
+SMITH	CLERK	     800
+WARD	SALESMAN	1250
+MARTIN	SALESMAN	1250
+TURNER	SALESMAN	1500
+ADAMS	CLERK	    1100
+MILLER	CLERK	    1300
+
+
+SELECT ENAME,JOB,SAL FROM EMP WHERE ENAME NOT LIKE 'C%'
+ENAME	JOB	        SAL
+KING	PRESIDENT	5000
+JONES	MANAGER	    2975
+ALLEN	SALESMAN	1600
+BLAKE	MANAGER	    2850
+JAMES	CLERK	     950
+SCOTT	ANALYST	    3000
+FORD	ANALYST	    3000
+SMITH	CLERK	     800
+WARD	SALESMAN	1250
+MARTIN	SALESMAN	1250
+TURNER	SALESMAN	1500
+ADAMS	CLERK	    1100
+MILLER	CLERK	    1300
+
+
+SELECT ENAME,JOB,MGR FROM EMP WHERE MGR IS NOT NULL
+ENAME	JOB	       MGR
+CLARK	MANAGER	  7839
+JONES	MANAGER	  7839
+ALLEN	SALESMAN  7698
+BLAKE	MANAGER	  7839
+JAMES	CLERK	  7698
+SCOTT	ANALYST	  7566
+FORD	ANALYST	  7566
+SMITH	CLERK	  7902
+WARD	SALESMAN  7698
+MARTIN	SALESMA   7698
+TURNER	SALESMAN  7698
+ADAMS	CLERK	  7788
+MILLER	CLERK	  7782
+13 rows returned in 0.00 second
+
+---------------------------------------------------------
