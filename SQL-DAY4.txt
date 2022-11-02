@@ -1,0 +1,212 @@
+CONDITIONAL EXPRESSION
+-----------------------
+
+1>CASE STATEMENTS:
+--------------------
+
+CASE expression WHEN comparison_expression1 THEN return expression1
+     expression WHEN comparison_expression2 THEN return expression2
+	 expression WHEN comparison_expression3 THEN return expression3
+	 expression WHEN comparison_expression4 THEN return expression4
+	 
+	 ELSE else_expression]
+	 END
+	 
+SELECT ENAME,JOB,SAL,
+CASE JOB WHEN 'ANALYST' THEN 10*SAL
+         WHEN 'CLERK'   THEN 15*SAL
+         WHEN 'MANAGER' THEN 5*SAL
+         WHEN 'SALESMAN' THEN 20*SAL
+
+ ELSE SAL END REVISED_SALARY_2022
+ FROM EMP; 
+ 
+ ENAME	JOB	        SAL	REVISED_SALARY_2022
+KING	PRESIDENT	5000	5000
+CLARK	MANAGER	    2450	12250
+JONES	MANAGER	    2975	14875
+ALLEN	SALESMAN	1600	32000
+BLAKE	MANAGER	    2850	14250
+JAMES	CLERK	     950	14250
+SCOTT	ANALYST	    3000	30000
+FORD	ANALYST	    3000	30000
+SMITH	CLERK	     800	12000
+WARD	SALESMAN	1250	25000
+MARTIN	SALESMAN	1250	25000
+TURNER	SALESMAN	1500	30000
+ADAMS	CLERK	    1100	16500
+MILLER	CLERK	    1300	19500
+
+SELECT ENAME,JOB,DEPTNO,SAL,
+
+CASE DEPTNO WHEN 10 THEN SAL+100
+            WHEN 20  THEN sal-100
+            WHEN 30  THEN sal
+    ELSE DEPTNO END  "updated_sal"
+    FROM  EMP
+	
+ENAME	JOB	       DEPTNO	SAL	updated_sal
+KING	PRESIDENT	10	   5000	5100
+CLARK	MANAGER	    10	   2450	2550
+JONES	MANAGER	    20	   2975	2875
+ALLEN	SALESMAN	30	   1600	1600
+BLAKE	MANAGER	    30	   2850	2850
+JAMES	CLERK	    30	    950	950
+SCOTT	ANALYST	    20	   3000	2900
+FORD	ANALYST	    20	   3000	2900
+SMITH	CLERK	    20	    800	700
+WARD	SALESMAN	30	   1250	1250
+MARTIN	SALESMAN	30	   1250	1250
+TURNER	SALESMAN	30	   1500	1500
+ADAMS	CLERK	    20	   1100	1000
+MILLER	CLERK	    10	   1300	1400
+
+
+
+DECODE-DECODE is equivalent to Simple CASE, except that DECODE has the handy feature of treating NULL as a value.
+------------------
+SELECT ENAME,JOB,DEPTNO,SAL,
+
+DECODE(DEPTNO,10,SAL+100,
+            20,sal-100,
+            30,NULL ,
+            DEPTNO)
+        "updated_sal"
+    FROM  EMP
+	
+ENAME	JOB	       DEPTNO	SAL	updated_sal
+KING	PRESIDENT	10	   5000	5100
+CLARK	MANAGER	    10	   2450	2550
+JONES	MANAGER	    20	   2975	2875
+ALLEN	SALESMAN	30	   1600	-
+BLAKE	MANAGER	    30	   2850	-
+JAMES	CLERK	    30	    950	-
+SCOTT	ANALYST	    20	   3000	2900
+FORD	ANALYST	    20	   3000	2900
+SMITH	CLERK	    20	    800	700
+WARD	SALESMAN	30	   1250	-
+MARTIN	SALESMAN	30	   1250	-
+TURNER	SALESMAN	30	   1500	-
+ADAMS	CLERK	    20	   1100	1000
+MILLER	CLERK	    10	   1300	1400
+
+
+
+Aggregate data using Group functions
+-------------------------------------
+
+GROUP FUNCTIONSS
+------------------
+It operates on set of rows that is actually giving one result only.
+
+->MAX
+->MIN
+->SUM
+->AVG
+->COUNT
+
+Display max,min,sum,avg,count of salary where job is Manager
+SELECT max(sal),min(sal),sum(sal),avg(sal),count(sal),count(deptno) from emp where job='MANAGER'
+
+***GROUP FUNCTIONS doesnot consider null values
+Select count(comm) from emp
+this will ingore null values
+COUNT(COMM)
+4
+
+Display the employee name who is the oldest employee
+select min(hiredate) from emp
+
+***we cannot use group function in where clause instead we can use HAVING Clause
+
+select ename,hiredate from emp where hiredate=min(hiredate)
+
+**we cannot select any other columns with group functions
+select ename,count(sal) from emp
+This is not allowed
+
+In order to get distinct departnment we we use distnct keyword
+
+select count(distinct deptno) from emp
+COUNT(DISTINCTDEPTNO)
+3
+
+how many employyes get commision
+select count(distinct comm) from emp
+
+COUNT(DISTINCTCOMM)
+4
+
+select round(avg(nvl(comm,0))) from emp
+
+***NVL FUNCTION FORCES GROUP FUNCTION TO INCLUDE NULL VALUES
+
+Find count of employyees in department 30
+SELECT COUNT(*) FROM EMP WHERE DEPTNO=30
+
+SELECT deptno,COUNT(*) FROM EMP group by deptno
+DEPTNO	COUNT(*)
+30   	6
+10	    3
+20	    5
+
+SELECT ename,deptno,COUNT(*) FROM EMP group by deptno
+	Error at line 1/8: ORA-00979: not a GROUP BY expression
+	**whatever column we are using in group by only thar column is used in select statement
+
+
+calculate max salary in each department
+SELECT max(sal),deptno from emp group by deptno
+MAX(SAL)	DEPTNO
+2850	     30
+5000	     10
+3000	     20
+
+calculate max salary for each job in each department
+
+SELECT deptno,job,max(sal) from emp group by deptno,job
+DEPTNO	JOB	       MAX(SAL)
+20	   MANAGER	    2975
+10	   PRESIDENT	5000
+20	   ANALYST	    3000
+10	   CLERK	    1300
+10	   MANAGER	    2450
+30	   SALESMAN	    1600
+20	   CLERK	    1100
+30	   MANAGER	    2850
+30	   CLERK	     950
+
+Using Having clause to restrict groups
+----------------------------------------
+select deptno,max(sal) from emp group by deptno having max(sal)>3000
+
+DEPTNO	MAX(SAL)
+10	5000
+
+Both the queries will give the same results
+select distinct (deptno ),job from emp where job='CLERK'
+select deptno,job from emp where job='CLERK' group by deptno,job
+
+select deptno,job,count(*),max(sal),min(sal) from emp where job='CLERK' group by deptno,job
+DEPTNO	JOB	  COUNT(*)	MAX(SAL)	MIN(SAL)
+30	   CLERK	1	       950	     950
+10	   CLERK	1	      1300	    1300
+20	   CLERK	2	      1100	     800
+
+select deptno,job,count(*),max(sal),min(sal) from emp where job='CLERK' 
+       group by deptno,job 
+	        having max(Sal)>1000  
+			       and deptno in(10,20,30) 
+				         order by deptno
+						 
+DEPTNO	JOB	COUNT(*)	MAX(SAL)	MIN(SAL)
+10	  CLERK	1	1300	1300
+20	  CLERK	2	1100	800
+
+***NESTED GROUP FUNCTION IS NOT ALLOWED WITHOUT GROUP BY CLAUSE
+SELECT MAX(AVG(SAL)) FROM EMP
+
+Error at line 1/12: ORA-00978: nested group function without GROUP BY
+
+NESTED GROUP FUNCTION BY USING GROUP BY CLAUSE
+SELECT MAX(AVG(SAL)) FROM EMP GROUP BY DEPTNO
