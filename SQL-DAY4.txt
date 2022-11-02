@@ -21,7 +21,7 @@ CASE JOB WHEN 'ANALYST' THEN 10*SAL
  ELSE SAL END REVISED_SALARY_2022
  FROM EMP; 
  
- ENAME	JOB	        SAL	REVISED_SALARY_2022
+ENAME	JOB	        SAL	REVISED_SALARY_2022
 KING	PRESIDENT	5000	5000
 CLARK	MANAGER	    2450	12250
 JONES	MANAGER	    2975	14875
@@ -125,13 +125,13 @@ select ename,hiredate from emp where hiredate=min(hiredate)
 select ename,count(sal) from emp
 This is not allowed
 
-In order to get distinct departnment we we use distnct keyword
+In order to get distinct departnment we we use distinct keyword
 
 select count(distinct deptno) from emp
 COUNT(DISTINCTDEPTNO)
 3
 
-how many employyes get commision
+->how many employees get commision
 select count(distinct comm) from emp
 
 COUNT(DISTINCTCOMM)
@@ -141,30 +141,34 @@ select round(avg(nvl(comm,0))) from emp
 
 ***NVL FUNCTION FORCES GROUP FUNCTION TO INCLUDE NULL VALUES
 
-Find count of employyees in department 30
+->Find count of employyees in department 30
 SELECT COUNT(*) FROM EMP WHERE DEPTNO=30
 
 SELECT deptno,COUNT(*) FROM EMP group by deptno
+
 DEPTNO	COUNT(*)
 30   	6
 10	    3
 20	    5
 
 SELECT ename,deptno,COUNT(*) FROM EMP group by deptno
+
 	Error at line 1/8: ORA-00979: not a GROUP BY expression
 	**whatever column we are using in group by only thar column is used in select statement
 
 
-calculate max salary in each department
+->calculate max salary in each department
+
 SELECT max(sal),deptno from emp group by deptno
 MAX(SAL)	DEPTNO
 2850	     30
 5000	     10
 3000	     20
 
-calculate max salary for each job in each department
+->calculate max salary for each job in each department
 
 SELECT deptno,job,max(sal) from emp group by deptno,job
+
 DEPTNO	JOB	       MAX(SAL)
 20	   MANAGER	    2975
 10	   PRESIDENT	5000
@@ -188,6 +192,7 @@ select distinct (deptno ),job from emp where job='CLERK'
 select deptno,job from emp where job='CLERK' group by deptno,job
 
 select deptno,job,count(*),max(sal),min(sal) from emp where job='CLERK' group by deptno,job
+
 DEPTNO	JOB	  COUNT(*)	MAX(SAL)	MIN(SAL)
 30	   CLERK	1	       950	     950
 10	   CLERK	1	      1300	    1300
@@ -209,4 +214,5 @@ SELECT MAX(AVG(SAL)) FROM EMP
 Error at line 1/12: ORA-00978: nested group function without GROUP BY
 
 NESTED GROUP FUNCTION BY USING GROUP BY CLAUSE
+
 SELECT MAX(AVG(SAL)) FROM EMP GROUP BY DEPTNO
