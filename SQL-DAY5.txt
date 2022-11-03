@@ -1,0 +1,297 @@
+THE SET OPERATIONS
+--------------------------------------------------------------------------------
+
+UNION
+
+returns results from both the queries after eliminating duplicates
+
+-----------------------------------------------------------------------------------
+UNION ALL
+
+returns results from both the queres including all duplicates
+
+---------------------------------------------------------------------------------------
+INTERSECT
+
+return all rows common in both the queries
+
+----------------------------------------------------------------------------------------
+MINUS
+
+returns rows returned by first query that are not present in the second query
+
+-----------------------------------------------------------------------------------
+RULES
+1.The expressions in the SELECT LIST must match in number and data type
+2.Parenthesis can be used to alter the sequence of execution
+-----------------------------------------------------------------------------------
+SELECT ENAME FROM EMP WHERE DEPTNO=10 UNION SELECT SAL FROM EMP WHERE DEPTNO=20
+
+Error at line 1/8: ORA-01790: expression must have same datatype as corresponding expression
+
+---------------------------------------------------------------------------------------------
+SELECT ENAME,SAL FROM EMP WHERE DEPTNO=10 UNION SELECT ENAME FROM EMP WHERE DEPTNO=20
+
+Error at line 2/1: ORA-01789: query block has incorrect number of result columns
+
+-------------------------------------------------------------------------------------------------
+select ename,deptno from emp where deptno=10 union select ename,deptno from emp where deptno in(10,20)
+ENAME	DEPTNO
+ADAMS	20
+CLARK	10
+FORD	20
+JONES	20
+KING	10
+MILLER	10
+SCOTT	20
+SMITH	20
+-----------------------------------------------------------------------------------------------------------
+select ename,deptno from emp where deptno=10 intersect select ename,deptno from emp where deptno in(10,20)
+ENAME	DEPTNO
+CLARK	10
+KING	10
+MILLER	10
+------------------------------------------------------------------------------------------------------------
+select ename,deptno from emp where deptno IN(10,20) minus select ename,deptno from emp where deptno=10
+ENAME	DEPTNO
+ADAMS	20
+FORD	20
+JONES	20
+SCOTT	20
+SMITH	20
+--------------------------------------------------------------------------------------------------------------
+select ename,deptno from emp where deptno=10 union all select ename,deptno from emp where deptno in(10,20)
+
+ENAME	DEPTNO
+KING	10
+CLARK	10
+JONES	20
+SCOTT	20
+FORD	20
+SMITH	20
+ADAMS	20
+MILLER	10
+
+--------------------------------------------------------------------------------------------------------------
+
+********************************SUBQUERIES***************************************************************************
+SELECT select_list 
+      FROM table
+	     WHERE expression operator(SELECT select_list from table)
+		 
+-->The SUBQUERY (INNER QUERY) EXECUTES ONCE BEFORE THE MAIN QUERY
+-->THE RESULT OF SUBQUERY IS USED BY THE MAIN QUERY (OUTER QUERY)
+
+**********************************RULES FOR USING SUBQUERIES*********************************************************
+-->ENCLOSE SUBQUERIES IN Parenthesis
+-->PLACE SUBQUERIES IN THE RIGHT SIDE OF THE COMPARISON STATEMENT
+-->THE ORDER BY CLAUSE IN THE SUBQUERY IS NOT NEEDED 
+-->USE SINGLE ROW OPERATOR WITH SINGLE ROW SUBQUERIES AND USE MULTIPLE ROW OPERATOR WITH MULTIPLE ROW SUBQUERIES
+
+*********************************TYPES OF SUBQUERIES*****************************************************************
+->SINGLE ROW SUBQUERIES
+RETURNS SINGLE RESULT
+
+->MULTIPLE ROW SUBQUERIES
+RETURNS MULTIPLE RESULTS
+
+----------------------------------------------------------------------------------------------------------------
+***********************************SINGLE ROW COMPARISON OPERATORS***********************************************
+=
+>
+>=
+<
+<=
+<>
+------------------------------------------------------------------------------------------------------------------
+
+->LIST ALL EMPLOYEES WHO HAS SAME JOB AS SCOTT AND THEIR SALARY IS GREATER THAN SMITH'S SALARY
+
+SELECT ENAME,JOB,SAL FROM EMP 
+      WHERE JOB=(SELECT JOB FROM EMP WHERE ENAME='SCOTT')
+      AND SAL>(SELECT SAL FROM EMP WHERE ENAME='SMITH')
+	  
+	  ENAME	JOB	SAL
+SCOTT	ANALYST	3000
+FORD	ANALYST	3000
+2 rows returned
+----------------------------------------------------------------------------------------------------------------------
+->LIST ALL EMPLOYEES WHOSE SALARY IS MINIMUM SALARY
+SELECT * FROM EMP 
+      WHERE SAL=(SELECT min(Sal) FROM EMP )
+	  
+EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7369	SMITH	CLERK	7902	12/17/1980	800	-	20
+1 rows returned in 0.01 seconds	 
+
+---------------------------------------------------------------------------------------------------------------------
+SELECT * FROM EMP 
+      WHERE SAL=(SELECT min(Sal) FROM EMP group by deptno)
+	  
+ORA-01427: single-row subquery returns more than one row
+HERE GROUP BY DEPTNO IS RETURNING MULTIPLE RESULTS SO IT IS THROWING ERROR
+----------------------------------------------------------------------------------------------------------------------
+***********************************MULTIPLE ROW COMPARISON OPERATORS***********************************************
+
+IN  EQUAL TO ANY NUMBER IN THE LIST
+
+ANY  COMPARES VALUES TO EACH VALUE RETTURNED BY THE SUBQUERY
+
+ALL  COMPARES VALUE TO EVERY VALUE RETTURNED BY THE SUBQUERY
+
+
+---------------------------------------------------------------------------------------------------------------------
+SELECT * FROM EMP 
+      WHERE SAL IN(SELECT min(Sal) FROM EMP group by deptno)
+	  
+EMPNO	ENAME	JOB	     MGR	HIREDATE	SAL	  COMM	DEPTNO
+7900	JAMES	CLERK	7698	12/03/1981	950	   -	30
+7369	SMITH	CLERK	7902	12/17/1980	800	   -	20
+7934	MILLER	CLERK	7782	01/23/1982	1300   -	10
+---------------------------------------------------------------------------------------------------------------------------	  
+-->LIST EMPLOYEES WHOSE SALARY IS LESS THAN ANY OF THE CLERK AND WHO ARE NOT ANAYLYST
+
+SELECT * FROM EMP WHERE SAL <ANY(SELECT SAL FROM EMP WHERE JOB='CLERK') AND JOB <> 'ANALYST'
+
+EMPNO	ENAME	JOB	       MGR	HIREDATE	SAL	   COMM	   DEPTNO
+7369	SMITH	CLERK	  7902	12/17/1980	800	     -	    20
+7900	JAMES	CLERK	  7698	12/03/1981	950	     -	    30
+7876	ADAMS	CLERK     7788	05/23/1987	1100	 -	    20
+7654	MARTIN	SALESMAN  7698	09/28/1981	1250	1400	30
+7521	WARD	SALESMAN  7698	02/22/1981	1250	500	    30
+5 rows returned in 0.22 seconds	        	
+
+-----------------------------------------------------------------------------------------------------------------------
+SELECT * FROM EMP WHERE EMPNO NOT IN(SELECT MGR FROM EMP WHERE MGR IS NOT NULL)
+EMPNO	ENAME	JOB	      MGR	HIREDATE	SAL	     COMM	DEPTNO
+7876	ADAMS	CLERK	 7788	05/23/1987	1100	   -	20
+7521	WARD	SALESMAN 7698	02/22/1981	1250	  500	30
+7499	ALLEN	SALESMAN 7698	02/20/1981	1600	  300	30
+7900	JAMES	CLERK	 7698	12/03/1981	950	       -	30
+7369	SMITH	CLERK	 7902	12/17/1980	800	       -	20
+7934	MILLER	CLERK	 7782	01/23/1982	1300	   -	10
+7654	MARTIN	SALESMAN 7698	09/28/1981	1250	 1400	30
+7844	TURNER	SALESMAN 7698	09/08/1981	1500	   0	30
+8 rows returned in 0.01 seconds	  
+-------------------------------------------------------------------------------------------------
+
+*******************CALCULATE FIRST MAX SALARY***********************************
+SELECT MAX(SAL) FROM EMP
+MAX(SAL)
+5000
+*******************CALCULATE SECOND MAX SALARY***********************************
+SELECT MAX(SAL) FROM EMP WHERE SAL<(SELECT MAX(SAL) FROM EMP)
+MAX(SAL)
+3000
+*******************CALCULATE THIRD MAX SALARY***********************************
+SELECT MAX(SAL) FROM EMP WHERE SAL<(SELECT MAX(SAL) FROM EMP WHERE SAL<(SELECT MAX(SAL) FROM EMP))
+MAX(SAL)
+2975
+*******************DISPLAY ALL EMPLOYEES WHO ARE EARNING MORE THAN ALL THE MANAGERS***********************************
+SELECT * FROM EMP WHERE SAL>ALL(SELECT SAL FROM EMP WHERE JOB='MANAGER')
+EMPNO	ENAME	JOB	       MGR	HIREDATE	SAL	  COMM	DEPTNO
+7902	FORD	ANALYST	  7566	12/03/1981	3000	-	20
+7788	SCOTT	ANALYST	  7566	04/19/1987	3000	-	20
+7839	KING	PRESIDENT	-	11/17/1981	5000	-	10
+
+
+****>IN CASE OF ALL IT WILL INGORE THE CURRENT COMPARSION I.E IN ABOVE CASE IT WILL IGNORE THE MANAGER SAL AND GIVE THE RESULT
+
+*******************DISPLAY ALL EMPLOYEES WHO ARE EARNING MORE THAN ANY OF THE MANAGERS***********************************
+
+SELECT * FROM EMP WHERE SAL>ANY(SELECT SAL FROM EMP WHERE JOB='MANAGER')
+EMPNO	ENAME	JOB	        MGR	HIREDATE	SAL	COMM	DEPTNO
+7839	KING	PRESIDENT	-	11/17/1981	5000	-	10
+7788	SCOTT	ANALYST	   7566	04/19/1987	3000	-	20
+7902	FORD	ANALYST	   7566	12/03/1981	3000	-	20
+7566	JONES	MANAGER	   7839	04/02/1981	2975	-	20
+7698	BLAKE	MANAGER	   7839	05/01/1981	2850	-	30
+5 rows returned in 0.01 seconds	
+
+        
+*******************DISPLAY ALL ANALYST WHO ARE EARNING MORE THAN ANY OF THE MANAGERS***********************************
+
+SELECT * FROM EMP WHERE JOB ='ANALYST' AND SAL>ANY(SELECT SAL FROM EMP WHERE JOB='MANAGER')
+
+EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7788	SCOTT	ANALYST	7566	04/19/1987	3000	-	20
+7902	FORD	ANALYST	7566	12/03/1981	3000	-	20
+2 rows returned in 0.01 seconds	 
+
+*******************DISPLAY ALL EMPLOYEES WHO WORKS IN DALLAS***********************************
+
+SELECT * FROM EMP WHERE DEPTNO IN (SELECT DEPTNO FROM DEPT WHERE LOC='DALLAS')
+
+EMPNO	ENAME	JOB	     MGR	HIREDATE	SAL	C   OMM	DEPTNO
+7566	JONES	MANAGER	7839	04/02/1981	2975	-	20
+7788	SCOTT	ANALYST	7566	04/19/1987	3000	-	20
+7902	FORD	ANALYST	7566	12/03/1981	3000	-	20
+7369	SMITH	CLERK	7902	12/17/1980	800	    -	20
+7876	ADAMS	CLERK	7788	05/23/1987	1100	-	20
+5 rows returned in 0.13 seconds	   
+ 
+*******************DISPLAY ALL DEPARTMENT INFORMATION FOR ALL MANAGERS***********************************
+SELECT * FROM DEPT WHERE DEPTNO IN (SELECT DEPTNO FROM EMP WHERE JOB='MANAGER')
+
+DEPTNO	DNAME	LOC
+10	ACCOUNTING	NEW YORK
+20	RESEARCH	DALLAS
+30	SALES	CHICAGO
+3 rows returned in 0.02 seconds	  
+
+*******************DISPLAY ALL MANAGERS&CLERKS who works in ACCOUNTING&SALES DEPARTMENT***********************************
+
+SELECT * FROM EMP WHERE DEPTNO IN (SELECT DEPTNO FROM DEPT WHERE DNAME IN('ACCOUNTING','SALES')) 
+AND JOB IN('MANAGERS','CLERK')
+
+EMPNO	ENAME	JOB	     MGR	HIREDATE	SAL	  COMM	DEPTNO
+7900	JAMES	CLERK	7698	12/03/1981	950	   -	30
+7934	MILLER	CLERK	7782	01/23/1982	1300   -	10
+2 rows returned in 0.01 seconds	        	
+
+*******************DISPLAY ALL SALESMAN who are not located in DALLAS***********************************
+
+SELECT * FROM EMP WHERE JOB='SALESMAN' AND DEPTNO NOT IN(SELECT DEPTNO FROM DEPT WHERE LOC='DALLS')
+
+EMPNO	ENAME	JOB	         MGR	HIREDATE	SAL	   COMM	DEPTNO
+7499	ALLEN	SALESMAN	7698	02/20/1981	1600	300	30
+7521	WARD	SALESMAN	7698	02/22/1981	1250	500	30
+7654	MARTIN	SALESMAN	7698	09/28/1981	1250   1400	30
+7844	TURNER	SALESMAN	7698	09/08/1981	1500	0	30
+4 rows returned in 0.01 seconds	        
+
+
+*******************DISPLAY ALL EMPLOYEES WHO WORK IN SAME DEPARTMENT AS OF SCOTT**********************************
+
+SELECT * FROM EMP WHERE DEPTNO=(SELECT DEPTNO FROM EMP WHERE ENAME='SCOTT')
+EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7566	JONES	MANAGER	7839	04/02/1981	2975	-	20
+7788	SCOTT	ANALYST	7566	04/19/1987	3000	-	20
+7902	FORD	ANALYST	7566	12/03/1981	3000	-	20
+7369	SMITH	CLERK	7902	12/17/1980	800	-	20
+7876	ADAMS	CLERK	7788	05/23/1987	1100	-	20
+5 rows returned in 0.01 seconds	        	Download
+
+*******************DISPLAY ALL EMPLOYEES WHO ARE EARNING SAME AS OF SCOTT**********************************
+
+SELECT * FROM EMP WHERE SAL=(SELECT SAL FROM EMP WHERE ENAME='SCOTT')  AND ENAME <> 'SCOTT'
+
+EMPNO	ENAME	JOB	    MGR	    HIREDATE	SAL	  COMM	DEPTNO
+7902	FORD	ANALYST	7566	12/03/1981	3000	-	20
+1 rows returned in 0.01 seconds	
+
+
+*******************DISPLAY ALL EMPLOYEES WHO ARE GETTING MORE THAN AVERAGE SALARIES OF ALL EMPLOYEES*********************
+
+SELECT * FROM EMP WHERE SAL>(SELECT AVG(SAL) FROM EMP)
+
+EMPNO	ENAME	JOB	       MGR	HIREDATE	SAL	  COMM	DEPTNO
+7839	KING	PRESIDENT	-	11/17/1981	5000	-	10
+7782	CLARK	MANAGER	  7839	06/09/1981	2450	-	10
+7566	JONES	MANAGER	  7839	04/02/1981	2975	-	20
+7698	BLAKE	MANAGER	  7839	05/01/1981	2850	-	30
+7788	SCOTT	ANALYST	  7566	04/19/1987	3000	-	20
+7902	FORD	ANALYST	  7566	12/03/1981	3000	-	20
+6 rows returned in 0.01 seconds	 
+
+---------------------------------------------------------------------------------------------------------------------------
