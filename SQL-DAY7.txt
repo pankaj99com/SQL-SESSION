@@ -1,0 +1,270 @@
+**********************************DDL(DATA DEFINITION LANGUAGE)*******************************************************
+========================
+List of DDL commands: 
+========================
+CREATE: 
+------------------------
+This command is used to create the database or its objects 
+(like table, index, function, views, store procedure, and triggers).
+
+
+
+CREATE TABLE LEAVE1(
+DEPTNO NUMBER(2), 
+DNAME VARCHAR(15),
+LOC VARCHAR(15) NOT NULL,
+LEAVE_DATE DATE,
+EMPNO number(4,0), 
+LEAVEID NUMBER(5),  
+PRIMARY KEY(LEAVEID), CHECK(LEAVEID>0)
+foreign key (DEPTNO) references dept (DEPTNO),
+foreign key (EMPNO) references EMP (EMPNO)
+)
+
+
+
+DROP: 
+-------------------------
+This command is used to delete objects from the database.
+
+*********************This will delete entire column from table*********************************************************
+ALTER TABLE LEAVE1 DROP COLUMN AGE
+
+________________________________________________________________________________________________________________________
+
+**********************This will delete entire table from database******************************************************
+DROP TABLE LEAVE1
+
+______________________________________________________________________________________________________________________________
+ALTER:
+--------------------------
+This is used to alter the structure of the database.
+
+**********************This will add new column in table****************************************************************
+Alter table Leave1 Add (age number(2))
+________________________________________________________________________________________________________________________
+
+TRUNCATE:
+----------------- 
+This is used to remove all records from a table, including all spaces allocated for the records are removed.
+
+***********************************This will remove all records from the table *****************************************
+TRUNCATE TABLE LEAVE2
+
+________________________________________________________________________________________________________________________
+
+COMMENT: 
+---------------------------
+This is used to add comments to the data dictionary.
+/*
+This is multiline comment
+
+*/
+
+-- this is single line comment
+________________________________________________________________________________________________________________________
+
+RENAME: 
+----------
+This is used to rename an object existing in the database.
+
+************************This will rename the table column name*************************************************************
+ALTER TABLE LEAVE1 RENAME COLUMN LOC TO LOCATION
+
+________________________________________________________________________________________________________________________
+MODIFY:
+--------
+
+********************This will modify the datatypes*************************************************************************
+ALTER TABLE LEAVE1 MODIFY LOCATION VARCHAR(20)
+
+-----------------------------------------------------------------------------------------------------------------------
+***********************************DML(DATA MANIPULATION LANGUAGE)********************************************************
+
+List of DML commands: 
+
+INSERT : 
+--------------
+It is used to insert data into a table.
+
+
+insert into LEAVE1 (DEPTNO, DNAME, LOC,LEAVE_DATE,EMPNO,LEAVEID) 
+values(10, 'ACCOUNTING', 'NEW YORK',to_DATE('31-10-2022','dd-mm-yyyy'),7782,80010)
+
+________________________________________________________________________________________________________________________
+UPDATE: 
+---------
+It is used to update existing data within a table.
+
+UPDATE LEAVE2 SET LEAVE_DATE=SYSDATE+7 WHERE LOC='BOSTON'
+________________________________________________________________________________________________________________________
+
+DELETE : 
+-------------
+It is used to delete records from a database table.
+DELETE FROM LEAVE2 WHERE LOC='BOSTON' 
+________________________________________________________________________________________________________________________
+
+*********************************DCL(DATA CONTROL LANGUAGE)****************************************************************
+List of  DCL commands: 
+
+GRANT: This command gives users access privileges to the database.
+REVOKE: This command withdraws the user’s access privileges given by using the GRANT command.
+-----------------------------------------------------------------------------------------------------------------------------
+
+****************************************TCL(TRANSACTION CONTROL LANGUAGE)***************************************************
+List of TCL commands: 
+ 
+COMMIT: Commits a Transaction.
+ROLLBACK: Rollbacks a transaction in case of any error occurs.
+SAVEPOINT:Sets a savepoint within a transaction.
+SET TRANSACTION: Specify characteristics for the transaction.
+______________________________________________________________________________________________________________________________
+
+****************************************DQL(DATA QUERY LANGUAGE)**************************************************************
+SELECT
+________________________________________________________________________________________________________________________
+
+***************************************CODD'S 12 RULE**********************************************************************
+Dr Edgar F. Codd, after his extensive research on the Relational Model of database systems, 
+came up with twelve rules of his own, which according to him, a database must obey in order 
+to be regarded as a true relational database.
+
+These rules can be applied on any database system that manages stored data using only its 
+relational capabilities. This is a foundation rule, which acts as a base for all the other rules.
+
+Rule 1: Information Rule
+---------------------------------------------------------------------------------------------------------------------------
+The data stored in a database, may it be user data or metadata, must be a value of some table cell. 
+Everything in a database must be stored in a table format.
+
+Rule 2: Guaranteed Access Rule
+-----------------------------------------------------------------------------------------------------------------------------
+Every single data element (value) is guaranteed to be accessible logically with a combination of 
+table-name, primary-key (row value), and attribute-name (column value). 
+No other means, such as pointers, can be used to access data.
+-----------------------------------------------------------------------------------------------------------------------------
+
+Rule 3: Systematic Treatment of NULL Values
+---------------------------------------------
+The NULL values in a database must be given a systematic and uniform treatment. 
+This is a very important rule because a NULL can be interpreted as one the following 
+− data is missing, data is not known, or data is not applicable.
+
+------------------------------------------------------------------------------------------------------------------------------
+
+Rule 4: Active Online Catalog
+--------------------------------
+The structure description of the entire database must be stored in an online catalog, 
+known as data dictionary, which can be accessed by authorized users. 
+Users can use the same query language to access the catalog which they use to access the database itself.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Rule 5: Comprehensive Data Sub-Language Rule
+----------------------------------------------
+A database can only be accessed using a language having linear syntax that supports data definition, 
+data manipulation, and transaction management operations. 
+This language can be used directly or by means of some application. 
+If the database allows access to data without any help of this language, then it is considered as a violation.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Rule 6: View Updating Rule
+-----------------------------
+All the views of a database, which can theoretically be updated, must also be updatable by the system.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Rule 7: High-Level Insert, Update, and Delete Rule
+----------------------------------------------------
+A database must support high-level insertion, updation, and deletion. 
+This must not be limited to a single row, that is, it must also support union, 
+intersection and minus operations to yield sets of data records.
+---------------------------------------------------------------------------------------------------------------------------
+
+Rule 8: Physical Data Independence
+------------------------------------
+The data stored in a database must be independent of the applications that access the database. 
+Any change in the physical structure of a database must not have any impact on how the data is 
+being accessed by external applications.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Rule 9: Logical Data Independence
+-----------------------------------
+The logical data in a database must be independent of its user’s view (application). 
+Any change in logical data must not affect the applications using it. 
+For example, if two tables are merged or one is split into two different tables, 
+there should be no impact or change on the user application. 
+This is one of the most difficult rule to apply.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Rule 10: Integrity Independence
+--------------------------------
+A database must be independent of the application that uses it. 
+All its integrity constraints can be independently modified without the need of any change in the application. 
+This rule makes a database independent of the front-end application and its interface.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Rule 11: Distribution Independence
+-------------------------------------
+The end-user must not be able to see that the data is distributed over various locations. 
+Users should always get the impression that the data is located at one site only. 
+This rule has been regarded as the foundation of distributed database systems.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Rule 12: Non-Subversion Rule
+-------------------------------
+If a system has an interface that provides access to low-level records, 
+then the interface must not be able to subvert the system and bypass security and integrity constraints.
+---------------------------------------------------------------------------------------------------------------------------
+
+********************************************NORMALIZATION****************************************************************
+
+Normalization is the process to eliminate data redundancy and enhance data integrity in the table. 
+Normalization also helps to organize the data in the database. 
+It is a multi-step process that sets the data into tabular form and removes 
+the duplicated data from the relational tables.
+
+Normalization organizes the columns and tables of a database to ensure that database integrity 
+constraints properly execute their dependencies. 
+It is a systematic technique of decomposing tables to eliminate data redundancy (repetition) 
+and undesirable characteristics like Insertion, Update, and Deletion anomalies.
+
+1st Normal Form (1NF)
+-------------------------
+A table is referred to as being in its First Normal Form if atomicity of the table is 1.
+Here, atomicity states that a single cell cannot hold multiple values. It must hold only a single-valued attribute.
+The First normal form disallows the multi-valued attribute, composite attribute, and their combinations.
+
+Second Normal Form (2NF)
+----------------------------
+The first condition for the table to be in Second Normal Form is that the table 
+has to be in First Normal Form. 
+The table should not possess partial dependency. 
+The partial dependency here means the proper subset of the candidate key should give a non-prime attribute.
+
+Third Normal Form (3NF)
+------------------------------
+The first condition for the table to be in Third Normal Form is that the table should be in the Second Normal Form.
+The second condition is that there should be no transitive dependency for non-prime attributes, which indicates 
+that non-prime attributes (which are not a part of the candidate key) should not depend on other non-prime attributes 
+in a table. Therefore, a transitive dependency is a functional dependency in which A → C (A determines C) 
+indirectly, because of A → B and B → C (where it is not the case that B → A).
+The third Normal Form ensures the reduction of data duplication. 
+It is also used to achieve data integrity.
+
+Boyce CoddNormal Form (BCNF)
+---------------------------------
+Boyce Codd Normal Form is also known as 3.5 NF. It is the superior version of 3NF and was developed by Raymond F. Boyce 
+and Edgar F. Codd to tackle certain types of anomalies which were not resolved with 3NF.
+
+The first condition for the table to be in Boyce Codd Normal Form is that the table should be in the third normal form. 
+Secondly, every Right-Hand Side (RHS) attribute of the functional dependencies should depend on the super key of that 
+particular table.
+
+______________________________________________________________________________________________________________________________
